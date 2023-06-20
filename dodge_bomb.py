@@ -6,7 +6,7 @@ import pygame as pg
 import time
 
 
-WIDTH, HEIGHT = 1000, 600
+WIDTH, HEIGHT = 1600, 900
 delta = {
     pg.K_UP: (0, -5),
     pg.K_DOWN: (0, +5),
@@ -47,22 +47,30 @@ def main():
     # 爆弾Rectの中心座標を乱数で指定する
     bd_rct.center = x, y 
     vx, vy = +5, +5  # 練習２
+    accs = [a for a in range(1, 11)]  # 加速度のリスト
+    bb_imgs = []  # 拡大爆弾Surfaceのリスト
     
-    
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0, 0, 0))
+        bb_imgs.append(bb_img)
     clock = pg.time.Clock()
+    
     tmr = 0
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
+            
         if kk_rct.colliderect(bd_rct):
-            #爆弾とこうかとんが衝突したら画面を変える
+            #爆弾とこうかとんが衝突したら画像を変える
             kk_img = pg.image.load("ex02/fig/8.png")
             screen.blit(bg_img, [0, 0])
             screen.blit(kk_img, kk_rct)
             pg.display.update()
-            print("ゲームオーバー")
-            time.sleep(3)
+            # print("ゲームオーバー")
+            time.sleep(3) #3秒間止める
             return
         
         key_lst = pg.key.get_pressed()
@@ -77,6 +85,9 @@ def main():
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         
+        avx, avy = vx*accs[min(tmr//500, 9)], vy*accs[min(tmr//500, 9)]
+        bd_rct.move_ip(avx, avy)
+        
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         bd_rct.move_ip(vx, vy)  # 練習２
@@ -85,7 +96,9 @@ def main():
             vx *= -1
         if not tate:  # 縦方向に範囲外だったら
             vy *= -1
-        screen.blit(bd_img, bd_rct)
+        
+        bb_img = bb_imgs[min(tmr//500, 9)]
+        screen.blit(bb_img, bd_rct)
         pg.display.update()
         tmr += 1
         clock.tick(50)
