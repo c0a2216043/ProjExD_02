@@ -1,6 +1,9 @@
 import random
+
 import sys
+
 import pygame as pg
+import time
 
 
 WIDTH, HEIGHT = 1000, 600
@@ -10,7 +13,6 @@ delta = {
     pg.K_LEFT: (-5, 0),
     pg.K_RIGHT: (+5, 0),
 }
-
 
 def check_bound(rect: pg.Rect) -> tuple[bool, bool]:
     """
@@ -45,7 +47,8 @@ def main():
     # 爆弾Rectの中心座標を乱数で指定する
     bd_rct.center = x, y 
     vx, vy = +5, +5  # 練習２
-
+    
+    
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -53,7 +56,13 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bd_rct):
+            #爆弾とこうかとんが衝突したら画面を変える
+            kk_img = pg.image.load("ex02/fig/8.png")
+            screen.blit(bg_img, [0, 0])
+            screen.blit(kk_img, kk_rct)
+            pg.display.update()
             print("ゲームオーバー")
+            time.sleep(3)
             return
         
         key_lst = pg.key.get_pressed()
@@ -63,9 +72,11 @@ def main():
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
         kk_rct.move_ip(sum_mv)
+
+        
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
- 
+        
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         bd_rct.move_ip(vx, vy)  # 練習２
