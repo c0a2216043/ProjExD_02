@@ -1,7 +1,5 @@
 import random
-
 import sys
-
 import pygame as pg
 import time
 
@@ -14,6 +12,7 @@ delta = {
     pg.K_RIGHT: (+5, 0),
 }
 
+bb_imgs = []  # 拡大爆弾Surfaceのリスト
 def check_bound(rect: pg.Rect) -> tuple[bool, bool]:
     """
     こうかとんRect，爆弾Rectが画面外 or 画面内かを判定する関数
@@ -48,7 +47,6 @@ def main():
     bd_rct.center = x, y 
     vx, vy = +5, +5  # 練習２
     accs = [a for a in range(1, 11)]  # 加速度のリスト
-    bb_imgs = []  # 拡大爆弾Surfaceのリスト
     
     for r in range(1, 11):
         bb_img = pg.Surface((20*r, 20*r))
