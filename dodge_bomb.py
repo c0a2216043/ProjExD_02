@@ -4,6 +4,7 @@ import random
 
 WIDTH, HEIGHT = 1000, 600
 
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -16,25 +17,38 @@ def main():
     clock = pg.time.Clock()
     tmr = 0
     
-    x = random.randint(0,WIDTH)
-    y = random.randint(0,HEIGHT)
     bd_rct = bd_img.get_rect()
-    bd_rct.center = x, y
     vx, vy = 5, 5 
+    
+    kk_rct = kk_img.get_rect()
+    kk_rct.center = (900, 400)
+    
+    move_dict = {
+        pg.K_UP: (0, -5),
+        pg.K_DOWN: (0, +5),
+        pg.K_LEFT: (-5, 0),
+        pg.K_RIGHT: (+5, 0)
+    }
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-
+            
+        key_lst = pg.key.get_pressed()
+        total_move = [0, 0]
+        
+        for key, move in move_dict.items():
+            if key_lst[key]:
+                total_move[0] += move[0]
+                total_move[1] += move[1]
+        kk_rct.move_ip(total_move)
         bd_rct.move_ip(vx, vy)
         screen.blit(bg_img, [0, 0])
-        screen.blit(kk_img, [900, 400])
+        screen.blit(kk_img, kk_rct)
         screen.blit(bd_img,bd_rct)
         pg.display.update()
         tmr += 1
         clock.tick(50)
-
-
 if __name__ == "__main__":
     pg.init()
     main()
